@@ -8,6 +8,8 @@ public class Monster : MonoBehaviour
     public GameObject propHp;
     [Header("加速藥水")]
     public GameObject propCd;
+    [Header("發射物件")]
+    public GameObject bullet;
 
     // 補血藥水掉落機率 0.3(30%)
     // Random.Range(0,1) - 0~1 隨機浮點數
@@ -16,11 +18,17 @@ public class Monster : MonoBehaviour
 
     private Animator ani;
     private float hp;
+    private float timer;
 
     private void Start()
     {
         hp = data.hp;
         ani = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        Attack();
     }
 
     /// <summary>
@@ -53,5 +61,21 @@ public class Monster : MonoBehaviour
         if (rHp <= data.propHp) Instantiate(propHp, transform.position + Vector3.right * Random.Range(-1f,1f), Quaternion.identity);
         float rCd = Random.Range(0f, 1f);
         if (rCd <= data.propCd) Instantiate(propHp, transform.position + Vector3.right * Random.Range(-1f, 1f), Quaternion.identity);
+    }
+
+    /// <summary>
+    /// 攻擊 : 發射物件
+    /// </summary>
+    private void Attack()
+    {
+        timer += Time.deltaTime;
+
+        if (timer >= data.cd)
+        {
+            timer = 0;
+            GameObject temp = Instantiate(bullet, transform.position + transform.forward, Quaternion.identity);
+            temp.AddComponent<Move>().speed = data.bulletSpeed;
+            temp.GetComponent<Ball>().type = "怪物";
+        }
     }
 }

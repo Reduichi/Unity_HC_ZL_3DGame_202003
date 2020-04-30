@@ -96,6 +96,7 @@ public class Dragon : MonoBehaviour
 
         temp.AddComponent<Ball>();                                 // 暫存火球.添加元件<球>()
         temp.GetComponent<Ball>().damage = attack;                 // 暫存火球.添加元件<球>().傷害值 = 攻擊力
+        temp.GetComponent<Ball>().type = "玩家";
         // Quaternion.identity 角度類型 - 零角度
         temp.GetComponent<Rigidbody>().AddForce(0, 0, speedFireBall);
     }
@@ -129,6 +130,25 @@ public class Dragon : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 受傷
+    /// </summary>
+    /// <param name="damage">接收到的傷害值</param>
+    public void Damage(float damage)
+    {
+        hp -= damage;
+        hpBar.fillAmount = hp / 100;
+        if (hp <= 0) Dead();
+    }
+
+    /// <summary>
+    /// 死亡
+    /// </summary>
+    private void Dead()
+    {
+        ani.SetBool("死亡開關", true);
+    }
+
     private void Start()
     {
         ani = GetComponent<Animator>();
@@ -137,6 +157,7 @@ public class Dragon : MonoBehaviour
 
     private void Update()
     {
+        if (ani.GetBool("死亡開關")) return;
         Move();
         Attack();
     }
