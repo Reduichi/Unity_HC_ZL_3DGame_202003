@@ -16,7 +16,7 @@ public class Ball : MonoBehaviour
             other.GetComponent<Monster>().Damage(damage);
             Destroy(gameObject);
         }
-        if (other.tag == "飛龍" && type == "怪物")
+        if (other.name == "飛龍" && type == "怪物")
         {
             other.GetComponent<Dragon>().Damage(damage);
             Destroy(gameObject);

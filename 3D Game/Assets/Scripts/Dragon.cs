@@ -4,12 +4,13 @@ using System.Collections;
 
 public class Dragon : MonoBehaviour
 {
+    public static float cd = 1;
+    public static float hp = 100;
+
     [Header("移動速度"), Range(1, 1000)]
     public float speed = 300;
     [Header("虛擬搖桿")]
     public Joystick joy;
-    [Header("攻擊冷卻時間")]
-    public float cd = 1;
     [Header("延遲生成火球時間")]
     public float delayFire = 0.5f;
     [Header("火球")]
@@ -18,10 +19,10 @@ public class Dragon : MonoBehaviour
     public float speedFireBall = 300;
     [Header("攻擊力"), Range(1, 5000)]
     public float attack = 35;
-    [Header("血量"), Range(1, 1000)]
-    public float hp = 100;
     [Header("血條")]
     public Image hpBar;
+
+    private GameManager gm;
 
     // 第一種寫法 : 需要欄位
     // public Transform tra;
@@ -118,6 +119,10 @@ public class Dragon : MonoBehaviour
         StartCoroutine(HpBarEffect());
     }
 
+    /// <summary>
+    /// 血條增加特效
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator HpBarEffect()
     {
         float hpAdd = hp + 20;
@@ -131,14 +136,29 @@ public class Dragon : MonoBehaviour
     }
 
     /// <summary>
+    /// 血條減少特效
+    /// </summary>
+    private IEnumerator HpBarEffectSub(float damage)
+    {
+        float hpSub = hp - damage;
+        if (hpSub <= 0) Dead();
+
+        while (hp > hpSub)
+        {
+            hp--;
+            hp = Mathf.Clamp(hp, 0, 100);
+            hpBar.fillAmount = hp / 100;
+            yield return new WaitForSeconds(0.01f);              // null 一禎
+        }
+    }
+
+    /// <summary>
     /// 受傷
     /// </summary>
     /// <param name="damage">接收到的傷害值</param>
     public void Damage(float damage)
     {
-        hp -= damage;
-        hpBar.fillAmount = hp / 100;
-        if (hp <= 0) Dead();
+        StartCoroutine(HpBarEffectSub(damage));
     }
 
     /// <summary>
@@ -147,12 +167,16 @@ public class Dragon : MonoBehaviour
     private void Dead()
     {
         ani.SetBool("死亡開關", true);
+        gm.Lose();
     }
 
     private void Start()
     {
+        // 取得元件<泛型>()
         ani = GetComponent<Animator>();
         hpBar.fillAmount = hp / 100;
+
+        gm = FindObjectOfType<GameManager>();
     }
 
     private void Update()
