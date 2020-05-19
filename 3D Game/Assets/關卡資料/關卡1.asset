@@ -20,7 +20,7 @@ MonoBehaviour:
         type: 3}
       x: 50
   - name: "\u7B2C\u4E8C\u6CE2"
-    time: 1
+    time: 10
     monsters:
     - monster: {fileID: 348231150544129249, guid: f99003fa7aec83d41979369888f95b8e,
         type: 3}
@@ -29,7 +29,7 @@ MonoBehaviour:
         type: 3}
       x: 52
   - name: "\u7B2C\u4E09\u6CE2"
-    time: 5
+    time: 15
     monsters:
     - monster: {fileID: 9169465590514902628, guid: 7174801edefae254180eb491d5568e3e,
         type: 3}
